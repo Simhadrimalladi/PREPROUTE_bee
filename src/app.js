@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
@@ -55,7 +56,7 @@ app.use('/api', routes);
 
 // Serve React frontend in production (if same server)
 const distPath = path.join(__dirname, '../../frontend/dist');
-if (env.NODE_ENV === 'production' && require('fs').existsSync(distPath)) {
+if (env.NODE_ENV === 'production' && fs.existsSync(distPath)) {
   app.use(express.static(distPath));
   app.get('*', (_req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
