@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  username: z.string().optional(),
-  userId: z.string().optional(),
+  username: z.string().trim().optional(),
+  userId: z.string().trim().optional(),
   password: z.string().min(1, 'Password is required')
 }).refine((data) => data.username || data.userId, {
   message: 'Either username or userId is required',
