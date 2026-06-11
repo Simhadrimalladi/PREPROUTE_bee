@@ -1,6 +1,7 @@
 import app from './src/app.js';
-import { connectDB } from './src/config/db.js';
+import { connectDB } from './src/config/database.js';
 import { env } from './src/config/env.js';
+import mongoose from 'mongoose';
 
 const start = async () => {
   try {
@@ -11,14 +12,18 @@ const start = async () => {
       console.log(`✅ CORS enabled for: ${env.CORS_ORIGIN}`);
     });
     
-    // Graceful shutdown
-    process.on('SIGTERM', () => {
-      console.log('SIGTERM signal received: closing HTTP server');
-      server.close(async () => {
-        await mongoose.connection.close();
-        console.log('HTTP server closed');
+    // Graceful shutdown - ONLY for local development, not needed for Vercel
+    if (env.NODE_ENV !== 'production') {
+      process.on('SIGTERM', () => {
+        console.log('SIGTERM signal received: closing HTTP server');
+        server.close(async () => {
+          if (mongoose.connection.readyState === 1) {
+            await mongoose.connection.close();
+          }
+          console.log('HTTP server closed');
+        });
       });
-    });
+    }
     
   } catch (error) {
     console.error('❌ Failed to start server:', error);
@@ -26,4 +31,9 @@ const start = async () => {
   }
 };
 
-start();
+// Only run if not in Vercel serverless environment
+if (process.env.VERCEL !== '1') {
+  start();
+}
+
+export default app;

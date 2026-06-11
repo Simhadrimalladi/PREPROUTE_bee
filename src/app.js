@@ -8,7 +8,8 @@ import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
 import { env } from './config/env.js';
 import routes from './routes/index.js';
-import { errorHandler, notFound } from './middleware/errorHandler.js';
+import { notFound } from './middleware/notFound.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,12 +20,12 @@ const app = express();
 app.use(helmet({ contentSecurityPolicy: false }));
 
 // CORS configuration - allow multiple origins
-const allowedOrigins = env.CORS_ORIGIN.split(',');
+const allowedOrigins = env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',') : ['*'];
 app.use(cors({ 
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
+    if (allowedOrigins.indexOf(origin) === -1 && allowedOrigins[0] !== '*') {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }

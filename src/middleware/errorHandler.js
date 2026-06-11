@@ -1,9 +1,3 @@
-export function notFound(req, _res, next) {
-  const error = new Error(`Route not found: ${req.method} ${req.originalUrl}`);
-  error.statusCode = 404;
-  next(error);
-}
-
 import { env } from '../config/env.js';
 
 export function errorHandler(error, _req, res, _next) {

@@ -9,6 +9,7 @@ import subTopicsRoutes from './subtopics.routes.js';
 import questionsRoutes from './questions.routes.js';
 
 const router = Router();
+
 router.get('/health', (_req, res) => res.json({ success: true, message: 'Preproute API is healthy' }));
 router.use('/auth', authRoutes);
 router.use('/dashboard', dashboardRoutes);
