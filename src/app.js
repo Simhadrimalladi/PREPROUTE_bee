@@ -52,6 +52,18 @@ if (env.NODE_ENV !== 'test') app.use(morgan('dev'));
 // Health check endpoint
 app.get('/health', (_req, res) => res.json({ success: true, message: 'API is healthy' }));
 
+// Root route
+app.get('/', (_req, res) => res.json({ 
+  success: true, 
+  message: 'Preproute API is running',
+  version: '1.0.0',
+  endpoints: {
+    health: '/health',
+    api: '/api',
+    docs: 'https://github.com/your-repo'
+  }
+}));
+
 // API routes
 app.use('/api', routes);
 
